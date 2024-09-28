@@ -1,0 +1,172 @@
+{% macro render_book_form(genres_list, choice_genres=[], action="edit", book=none) %}
+    <div class="container">
+        {% if action == "edit" %}
+            <h2 class="my-4 text-center text-uppercase font-weight-bold">Редактирование книги</h2>
+        {% else %}
+            <h2 class="my-4 text-center text-uppercase font-weight-bold">Добавление книги</h2>
+        {% endif %}
+
+        <form method="POST" 
+            {% if action == 'add' %}
+                action="{{ url_for('book.add') }}"
+            {% else %}
+                action="{{ url_for('book.edit', book_id=book.id) }}"
+            {% endif %}
+            enctype="multipart/form-data">
+            <input type="hidden" name="author_id" value="#">
+            <div class="mb-3 row">
+                <div class="col-md-6 d-flex flex-column">
+                    <div class="mb-3">
+                        <label for="name">Название</label>
+                        {% if session.get('save_input_data') | length != 0 %}
+                            <input class="form-control" type="text" name="name" id="name" value="{{ session.get('save_input_data').get('name') or '' }}">
+                        {% else %}
+                            <input class="form-control" type="text" name="name" id="name" value="{% if book != none %}{{ book.name }}{% endif %}">
+                        {% endif %}
+                    </div>
+                    <div class="mb-3 d-flex flex-column flex-grow-1">
+                        <label for="short_description">Краткое описание</label>
+                        {% if session.get('save_input_data') | length != 0 %}
+                            <textarea 
+                                class="form-control flex-grow-1" 
+                                name="short_desc" 
+                                id="short_description" 
+                                cols="30" 
+                                rows="5">{{ session.get('save_input_data').get('short_desc') or '' }}</textarea>
+                        {% else %}
+                            <textarea 
+                                class="form-control flex-grow-1" 
+                                name="short_desc" 
+                                id="short_description" 
+                                cols="30" 
+                                rows="5">{{ book.short_desc or '' }}</textarea>
+                        {% endif %}
+                    </div>
+                </div>
+                {% if action == "add" %}
+                    <div class="col-md-6 d-flex flex-column">
+                        <div class="mb-3">
+                            <label for="background_img">Фоновое изображение</label>
+                            <input class="form-control" type="file" name="background_img" id="background_img">
+                        </div>
+                        <div class="mb-3 background-preview p-3 rounded d-flex align-items-center justify-content-center">
+                            <img src="#" class="img-fluid d-none" alt="">
+                            <label for="background_img" class="btn btn-dark">Выбрать изображение</label>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="col-md-6 d-flex flex-column">
+                        <div class="mb-3">
+                            <label for="genre">Жанр</label>
+                            <select class="form-select" name="genres_filter" multiple>
+                            {% if choice_genres | length != 0 %}
+                                <option value="default">Выберите жанр</option>
+                                {% for genre in genres_list %}
+                                    <option 
+                                        value="{{ genre.id }}"
+                                        {% if genre.id in choice_genres %}selected{% endif %}>
+                                        {{ genre.name }}
+                                    </option>
+                                {% endfor %}
+                            {% else %}
+                                <option value="default" selected>Выберите жанр</option>
+                                {% for genre in genres_list %}
+                                    <option value="{{ genre.id }}">{{ genre.name }}</option>
+                                {% endfor %}
+                            {% endif %}
+                            </select>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3 row">
+                <div class="col-md-6 d-flex flex-column">
+                    <div class="mb-3">
+                        <label for="year">Год издания</label>
+                        {% if session.get('save_input_data') | length != 0 %}
+                            <input class="form-control" type="text" name="year" id="year" value="{{ session.get('save_input_data').get('year') or '' }}">
+                        {% else %}
+                            <input class="form-control" type="text" name="year" id="year" value="{% if book != none %}{{ book.year }}{% endif %}">
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-6 d-flex flex-column">
+                    <div class="mb-3 d-flex flex-column flex-grow-1">
+                        <label for="author">Автор</label>
+                        {% if session.get('save_input_data') | length != 0 %}
+                            <input class="form-control" type="text" name="author" id="author" value="{{ session.get('save_input_data').get('author') or '' }}">
+                        {% else %}
+                            <input class="form-control" type="text" name="author" id="author" value="{% if book != none %}{{ book.author }}{% endif %}">
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <div class="col-md-6 d-flex flex-column">
+                    <div class="mb-3">
+                        <label for="publisher">Издательство</label>
+                        {% if session.get('save_input_data') | length != 0 %}
+                            <input class="form-control" type="text" name="publisher" id="publisher" value="{{ session.get('save_input_data').get('publisher') or '' }}">
+                        {% else %}
+                            <input class="form-control" type="text" name="publisher" id="publisher" value="{% if book != none %}{{ book.publisher }}{% endif %}">
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-6 d-flex flex-column">
+                    <div class="mb-3 d-flex flex-column flex-grow-1">
+                        <label for="volume">Объем книги</label>
+                        {% if session.get('save_input_data') | length != 0 %}
+                            <input class="form-control" type="text" name="volume" id="volume" value="{{ session.get('save_input_data').get('volume') or '' }}">
+                        {% else %}
+                            <input class="form-control" type="text" name="volume" id="volume" value="{% if book != none %}{{ book.volume }}{% endif %}">
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            {% if action == "add" %}
+                <div class="mb-3 row">
+                    <div class="col-md-6 d-flex flex-column">
+                        <div class="mb-3">
+                            <label for="genre">Жанр</label>
+                            <select class="form-select" name="genres_filter" multiple>
+                            {% if choice_genres | length != 0 %}
+                                <option value="default">Выберите жанр</option>
+                                {% for genre in genres_list %}
+                                    <option 
+                                        value="{{ genre.id }}"
+                                        {% if genre.id in choice_genres %}selected{% endif %}>
+                                        {{ genre.name }}
+                                    </option>
+                                {% endfor %}
+                            {% else %}
+                                <option value="default" selected>Выберите жанр</option>
+                                {% for genre in genres_list %}
+                                    <option value="{{ genre.id }}">{{ genre.name }}</option>
+                                {% endfor %}
+                            {% endif %}  
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="mb-3 text-center">
+                <input type="submit" class="btn btn-dark" value="Сохранить">
+            </div>
+        </form>
+    </div>
+
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var easyMDE = new EasyMDE({ element: document.getElementById("short_description") });
+        });
+    </script>
+{% endmacro %}
+
+
+
+
