@@ -1,0 +1,25 @@
+version: '3'
+services:
+  web:
+    build: .
+    ports:
+      - "5001:5000"
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    environment:
+      - FLASK_ENV=development
+    command: /usr/local/bin/flask run --host=0.0.0.0
+
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: flaskuser
+      POSTGRES_PASSWORD: flaskpassword
+      POSTGRES_DB: flaskdb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
