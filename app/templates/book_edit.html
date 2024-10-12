@@ -1,6 +1,0 @@
-{% extends 'base.html' %}
-{% from 'book_form.html' import render_book_form %}
-
-{% block content %}
-    {{ render_book_form(genres_list, choice_genres=choice_genres, action="edit", book=book) }}
-{% endblock %}
