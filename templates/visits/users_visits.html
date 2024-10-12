@@ -1,0 +1,51 @@
+{% extends 'visits/base.html' %}
+{% from 'pagination.html' import render_pagination %}
+
+{% block tab_content %}
+
+<table class="table mt-5">
+    <thead>
+        <tr>
+            <th>
+                №
+            </th>
+            <th>
+                Пользователь
+            </th>
+            <th>
+                Книга
+            </th>
+            <th>
+                Дата и время просмотра
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for book in books %}
+        <tr>
+            <td>
+                {{loop.index}}
+            </td>
+            <td>
+                {{book.user.full_name or 'Неаутентифицированный пользователь'}} 
+            </td>
+            <td>
+                {{book.book.name}}
+            </td>
+            <td>
+                {{book.created_at}}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{{ render_pagination(pagination, request.endpoint) }}
+
+<a class="btn btn-dark mb-5" href="{{ url_for('visits.users_visits', export_csv=True) }}">Экспорт в CSV</a>
+    </div>
+
+{% endblock %}
+
+
+
+

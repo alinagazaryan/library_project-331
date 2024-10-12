@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% from 'reviews/macros.html' import review_show_one %}
+{% block content %}
+<div class="m-auto">
+    <h1 class="title mb-3 font-weight-bold text-center mt-5 mb-5">Просмотр книги {{ book.name }}</h1>
+    <div class="text-center mb-5">
+        <img src="{{ url_for('image', image_id=book.image_id) }}" alt="Обложка книги" style="height: 400px; " >
+    </div>
+    
+    <table class="table text-center">
+        <tr>
+            <th>Название</th>
+            <th>Жанр(ы)</th>
+            <th>Год</th>
+            <th>Рейтинг</th>
+            <th>Количество рецензий</th>
+        </tr>
+        <tr>
+            <td style="vertical-align: middle;"> {{ book.name }}</td>
+            <td style="vertical-align: middle;"> 
+                {% for genre in book.genres %}
+                {{ genre.name }}
+                {% endfor %}
+            </td>
+            <td style="vertical-align: middle;"> {{ book.year_release }}</td>
+            <td style="vertical-align: middle;"> <span>★</span> <span>{{ "%.2f" | format(book.rating) }}</span> </td>
+            <td style="vertical-align: middle;"> {{ book.rating_num }} </td>
+        </tr>
+
+    </table>
+    
+    <div class="container mt-5 d-flex align-items-center justify-content-center min-vh-15">
+        <section class="about mb-5">
+            <h2 class="mb-3 text-center text-uppercase font-weight-bold" style="width: 600px;">Краткое описание</h2>
+            <div class=""> 
+                <p>{{ book.short_desc | safe() }}</p>
+            </div>
+        </section>
+
+    </div>
+
+    <div class="container  mt-5 d-flex align-items-center justify-content-center min-vh-15"></div>
+
+        <h2 class="mb-3 text-center text-uppercase font-weight-bold">Отзывы</h2>
+        <div class="row me-3 ms-3 ">
+            {% for review in reviews %} 
+                {{review_show_one(review)}}
+            {% endfor %}
+        </div>
+
+    </div>
+
+    {% if user_review  %}
+    <h2 class="mb-3 text-center text-uppercase font-weight-bold">Ваш отзыв</h2>
+        {{review_show_one(user_review)}}
+    {% elif current_user.is_authenticated %}
+        <div class="text-center mt-5 mb-5">
+            <a class="btn btn-lg btn-dark" href="{{url_for('reviews.new_review', book_id=book.id)}}">Написать
+                рецензию</a>
+        </div>
+    {% endif %}
+
+    <div class="container mt-5 mb-5">
+        <div class="btn-group d-flex" role="group" aria-label="Кнопки для навигации">
+            <a class="btn btn-lg btn-dark flex-fill" href="{{ url_for('index')}}">Вернуться</a>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+{% endblock %}

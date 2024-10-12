@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+
+
+{% block content %}
+  
+    {% block form_content %}
+    {% endblock %} 
+    <ul class="nav nav-tabs mt-5">
+        {% if current_user.is_authenticated and current_user.can('get_logs')  %}
+        <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == 'visits.pages_stat' %}active{% endif %}" aria-current="page"
+            href="{{ url_for('visits.users_visits') }}">Журнал действий пользователей</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == 'visits.users_stat' %}active{% endif %}" aria-current="page"
+            href="{{ url_for('visits.books_visits') }}">Статистика просмотра книг</a>
+        </li>
+        {% endif %}
+    </ul>
+
+
+    {% block tab_content %}
+    {% endblock %}  
+{% endblock %}
