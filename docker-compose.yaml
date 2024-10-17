@@ -7,12 +7,12 @@ services:
     volumes:
       - .:/app
     depends_on:
-      - db
+      - db1
     environment:
       - FLASK_ENV=development
     command: /usr/local/bin/flask run --host=0.0.0.0
 
-  db:
+  db1:
     image: postgres:latest
     environment:
       POSTGRES_USER: flaskuser
